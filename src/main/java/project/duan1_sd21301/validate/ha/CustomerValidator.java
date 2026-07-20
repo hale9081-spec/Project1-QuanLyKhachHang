@@ -17,11 +17,9 @@ public class CustomerValidator {
      * @param id           Mã khách hàng cần kiểm tra
      * @param fullName     Họ và tên khách hàng
      * @param email        Địa chỉ email khách hàng
-     * @param password     Mật khẩu đăng nhập
      * @param phone        Số điện thoại liên lạc
      * @param birthday     Ngày sinh
      * @param gender       Giới tính khách hàng
-     * @param memberLevel  Hạng thành viên
      * @param status       Trạng thái hoạt động
      * @param address      Địa chỉ mặc định chi tiết
      * @param customers    Danh sách khách hàng hiện có trong hệ thống (để kiểm tra trùng lặp)
@@ -32,11 +30,9 @@ public class CustomerValidator {
             String id,
             String fullName,
             String email,
-            String password,
             String phone,
             Date birthday,
             String gender,
-            String memberLevel,
             String status,
             String address,
             List<Customer> customers,
@@ -77,12 +73,7 @@ public class CustomerValidator {
             errors.add("Email không đúng định dạng.");
         }
 
-        // 4. Xác thực Mật khẩu đăng nhập
-        if (password == null || password.trim().isEmpty()) {
-            errors.add("Mật khẩu không được để trống.");
-        } else if (password.length() < 6) {
-            errors.add("Mật khẩu phải có ít nhất 6 ký tự.");
-        }
+        // 4. Bỏ qua xác thực Mật khẩu đăng nhập vì không cần dùng nữa
 
         // 5. Xác thực Số điện thoại nhận hàng
         if (phone == null || phone.trim().isEmpty()) {
@@ -103,10 +94,6 @@ public class CustomerValidator {
             errors.add("Vui lòng chọn giới tính.");
         }
 
-        // 8. Xác thực Hạng thành viên
-        if (memberLevel == null || memberLevel.trim().isEmpty()) {
-            errors.add("Vui lòng chọn hạng thành viên.");
-        }
 
         // 9. Xác thực Trạng thái hoạt động
         if (status == null || status.trim().isEmpty()) {
@@ -114,8 +101,9 @@ public class CustomerValidator {
         }
 
         // 10. Xác thực Địa chỉ mặc định chi tiết
-        if (address == null || address.trim().isEmpty()) {
-            errors.add("Địa chỉ mặc định không được để trống.");
+        if (address == null || address.trim().isEmpty()
+                || address.trim().replaceAll("[,\\s]+", "").isEmpty()) {
+            errors.add("Địa chỉ mặc định không được để trống hoặc không hợp lệ.");
         }
 
         // 11. Kiểm tra tính duy nhất (Không trùng lặp) của Email trong hệ thống

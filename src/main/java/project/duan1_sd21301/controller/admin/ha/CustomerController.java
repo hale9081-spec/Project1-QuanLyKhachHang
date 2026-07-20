@@ -53,8 +53,6 @@ public class CustomerController extends HttpServlet {
                         .phoneNumber("0987654321")
                         .dateOfBirth(dateFormat.parse("1995-05-12"))
                         .gender("Nam")
-                        .accumulatedPoints(120)
-                        .membershipLevel("Vàng")
                         .avatar("https://i.pravatar.cc/150?img=11")
                         .status("Hoạt động")
                         .defaultAddress(new Address("Nguyễn Anh Tuấn", "0987654321", "123 Nguyễn Trãi, Quận 1, TP. Hồ Chí Minh"))
@@ -72,8 +70,6 @@ public class CustomerController extends HttpServlet {
                         .phoneNumber("0912345678")
                         .dateOfBirth(dateFormat.parse("1998-09-20"))
                         .gender("Nữ")
-                        .accumulatedPoints(450)
-                        .membershipLevel("Kim cương")
                         .avatar("https://i.pravatar.cc/150?img=47")
                         .status("Hoạt động")
                         .defaultAddress(new Address("Trần Thị Mai", "0912345678", "456 Lê Lợi, Quận Hải Châu, Đà Nẵng"))
@@ -92,8 +88,6 @@ public class CustomerController extends HttpServlet {
                         .phoneNumber("0909090909")
                         .dateOfBirth(dateFormat.parse("1992-12-30"))
                         .gender("Nam")
-                        .accumulatedPoints(50)
-                        .membershipLevel("Đồng")
                         .avatar("https://i.pravatar.cc/150?img=12")
                         .status("Khóa")
                         .defaultAddress(new Address("Lê Minh Hoàng", "0909090909", "789 Cầu Giấy, Quận Cầu Giấy, Hà Nội"))
@@ -109,8 +103,6 @@ public class CustomerController extends HttpServlet {
                         .phoneNumber("0977777777")
                         .dateOfBirth(dateFormat.parse("1999-03-15"))
                         .gender("Nữ")
-                        .accumulatedPoints(280)
-                        .membershipLevel("Bạc")
                         .avatar("https://i.pravatar.cc/150?img=49")
                         .status("Hoạt động")
                         .defaultAddress(new Address("Phạm Khánh Vy", "0977777777", "321 Trần Hưng Đạo, Quận Ninh Kiều, Cần Thơ"))
@@ -229,7 +221,7 @@ public class CustomerController extends HttpServlet {
 
         // 5. Giao diện Danh sách khách hàng (Có tìm kiếm và bộ lọc)
         String search = request.getParameter("search");
-        String filterRank = request.getParameter("filterRank");
+
         String filterStatus = request.getParameter("filterStatus");
         String filterGender = request.getParameter("filterGender");
         String filterAddress = request.getParameter("filterAddress");
@@ -278,10 +270,7 @@ public class CustomerController extends HttpServlet {
                 matches = addressMatch;
             }
 
-            // Lọc theo Hạng thành viên (Đồng, Bạc, Vàng, Kim cương)
-            if (matches && filterRank != null && !filterRank.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(filterRank)) {
-                matches = filterRank.equalsIgnoreCase(c.getMembershipLevel());
-            }
+
 
             // Lọc theo Trạng thái hoạt động (Hoạt động, Khóa)
             if (matches && filterStatus != null && !filterStatus.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(filterStatus)) {
@@ -298,7 +287,7 @@ public class CustomerController extends HttpServlet {
         request.setAttribute("pageTitle", "Quản lý khách hàng");
         request.setAttribute("customers", filteredCustomers);
         request.setAttribute("searchVal", search != null ? search : "");
-        request.setAttribute("filterRankVal", filterRank != null ? filterRank : "Tất cả");
+
         request.setAttribute("filterStatusVal", filterStatus != null ? filterStatus : "Tất cả");
         request.setAttribute("filterGenderVal", filterGender != null ? filterGender : "Tất cả");
         request.setAttribute("filterAddressVal", filterAddress != null ? filterAddress : "");
@@ -335,15 +324,10 @@ public class CustomerController extends HttpServlet {
             
             String hoTen = request.getParameter("hoTen");
             String email = request.getParameter("email");
-            String matKhau = request.getParameter("matKhau");
             String soDienThoai = request.getParameter("soDienThoai");
             String ngaySinhStr = request.getParameter("ngaySinh");
             String gioiTinh = request.getParameter("gioiTinh");
-            String diemStr = request.getParameter("diemTichLuy");
-            String hangThanhVien = request.getParameter("hangThanhVien");
-            if (hangThanhVien == null || hangThanhVien.trim().isEmpty()) {
-                hangThanhVien = "Đồng";
-            }
+
             String trangThai = request.getParameter("trangThai");
             String diaChiMacDinhTen = request.getParameter("diaChiMacDinhTen");
             String diaChiMacDinhSdt = request.getParameter("diaChiMacDinhSdt");
@@ -392,14 +376,7 @@ public class CustomerController extends HttpServlet {
                 ngaySinh = new Date();
             }
 
-            // Định dạng điểm tích lũy
-            int diemTichLuy = 0;
-            try {
-                if (diemStr != null && !diemStr.isEmpty()) {
-                    diemTichLuy = Integer.parseInt(diemStr);
-                }
-            } catch (NumberFormatException ignored) {
-            }
+
 
             // Khởi tạo đối tượng địa chỉ mặc định
             Address defaultAddr = new Address(
@@ -424,8 +401,8 @@ public class CustomerController extends HttpServlet {
             // GỌI BỘ XÁC THỰC DỮ LIỆU (VALIDATE)
             boolean isEdit = "edit".equals(action);
             List<String> errors = CustomerValidator.validate(
-                    id, hoTen, email, matKhau, soDienThoai, ngaySinh, gioiTinh,
-                    hangThanhVien, trangThai, diaChiMacDinhDetail, customers, isEdit
+                    id, hoTen, email, soDienThoai, ngaySinh, gioiTinh,
+                    trangThai, diaChiMacDinhDetail, customers, isEdit
             );
 
             // Nếu phát hiện lỗi nghiệp vụ: Dừng xử lý và trả về form kèm thông tin cũ
@@ -436,11 +413,9 @@ public class CustomerController extends HttpServlet {
                         .id(id)
                         .fullName(hoTen)
                         .email(email)
-                        .password(matKhau)
                         .phoneNumber(soDienThoai)
                         .dateOfBirth(ngaySinh)
                         .gender(gioiTinh)
-                        .membershipLevel(hangThanhVien)
                         .status(trangThai)
                         .avatar(anhDaiDien)
                         .defaultAddress(defaultAddr)
@@ -459,12 +434,9 @@ public class CustomerController extends HttpServlet {
                         .id(id)
                         .fullName(hoTen)
                         .email(email)
-                        .password(matKhau)
                         .phoneNumber(soDienThoai)
                         .dateOfBirth(ngaySinh)
                         .gender(gioiTinh)
-                        .accumulatedPoints(diemTichLuy)
-                        .membershipLevel(hangThanhVien)
                         .avatar(anhDaiDien)
                         .status(trangThai)
                         .defaultAddress(defaultAddr)
@@ -479,12 +451,9 @@ public class CustomerController extends HttpServlet {
                     if (c.getId().equals(id)) {
                         c.setFullName(hoTen);
                         c.setEmail(email);
-                        c.setPassword(matKhau);
                         c.setPhoneNumber(soDienThoai);
                         c.setDateOfBirth(ngaySinh);
                         c.setGender(gioiTinh);
-                        c.setAccumulatedPoints(diemTichLuy);
-                        c.setMembershipLevel(hangThanhVien);
                         c.setAvatar(anhDaiDien);
                         c.setStatus(trangThai);
                         c.setDefaultAddress(defaultAddr);

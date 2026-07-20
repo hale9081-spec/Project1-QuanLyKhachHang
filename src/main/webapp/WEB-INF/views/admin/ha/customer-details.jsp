@@ -19,9 +19,10 @@
                                 <link
                                     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
                                     rel="stylesheet">
-                                  <!-- Nhúng CSS Custom -->
-                                  <link rel="stylesheet" href="<%= contextPath %>/assets/css/admin.css">
-                                  <link rel="stylesheet" href="<%= contextPath %>/assets/css/customers/customer.css?v=<%= System.currentTimeMillis() %>">
+                                <!-- Nhúng CSS Custom -->
+                                <link rel="stylesheet" href="<%= contextPath %>/assets/css/admin.css">
+                                <link rel="stylesheet"
+                                    href="<%= contextPath %>/assets/css/customers/customer.css?v=<%= System.currentTimeMillis() %>">
 
                                 <style>
                                     .profile-container {
@@ -213,7 +214,7 @@
                                                 <% } else { String statusLabel=c.getStatus(); %>
                                                     <!-- Thanh tiêu đề & nút điều hướng -->
                                                     <div class="page-header"
-                                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                                                         <div>
                                                             <h1>Hồ sơ: <%= c.getFullName() %>
                                                             </h1>
@@ -239,9 +240,8 @@
                                                         <!-- Cột trái: Avatar và Tóm tắt dạng nền sáng tinh tế, không màu sắc -->
                                                         <div class="profile-card-left"
                                                             style="background-color: #ffffff; border: 1px solid #e2e8f0;">
-                                                            <img src="<%= c.getAvatar() %>"
-                                                                class="profile-avatar-large" alt="avatar"
-                                                                style="border: 2px solid #cbd5e1;">
+                                                            <img src="<%= c.getAvatar() %>" class="profile-avatar-large"
+                                                                alt="avatar" style="border: 2px solid #cbd5e1;">
                                                             <div class="profile-name">
                                                                 <%= c.getFullName() %>
                                                             </div>
@@ -250,17 +250,10 @@
                                                             </div>
 
                                                             <div class="profile-stat-box">
+
                                                                 <div class="stat-item">
-                                                                    <span class="stat-val">
-                                                                        <%= c.getAccumulatedPoints() %>
-                                                                    </span>
-                                                                    <span class="stat-lbl">Tích lũy</span>
-                                                                </div>
-                                                                <div
-                                                                    style="width: 1px; background-color: #e2e8f0; height: 30px;">
-                                                                </div>
-                                                                <div class="stat-item">
-                                                                    <% if ("Hoạt động".equalsIgnoreCase(c.getStatus())) { %>
+                                                                    <% if ("Hoạt động".equalsIgnoreCase(c.getStatus()))
+                                                                        { %>
                                                                         <span class="stat-val"
                                                                             style="color: #16a34a;">Hoạt động</span>
                                                                         <% } else { %>
@@ -294,8 +287,8 @@
                                                                     <span class="info-label">Ngày sinh</span>
                                                                     <span class="info-value">
                                                                         <%= c.getDateOfBirth() !=null ?
-                                                                            df.format(c.getDateOfBirth()) : "Chưa cập nhật"
-                                                                            %>
+                                                                            df.format(c.getDateOfBirth())
+                                                                            : "Chưa cập nhật" %>
                                                                     </span>
                                                                 </div>
                                                                 <div class="info-item">
@@ -321,19 +314,7 @@
                                                                         <%= c.getEmail() %>
                                                                     </span>
                                                                 </div>
-                                                                <div class="info-item">
-                                                                    <span class="info-label">Mật khẩu tài khoản</span>
-                                                                    <span class="info-value"
-                                                                        style="font-family: monospace; color: #475569;">
-                                                                        <%= c.getPassword() %>
-                                                                    </span>
-                                                                </div>
-                                                                <div class="info-item">
-                                                                    <span class="info-label">Điểm số hiện có</span>
-                                                                    <span class="info-value" style="font-weight: 600;">
-                                                                        <%= c.getAccumulatedPoints() %> điểm
-                                                                    </span>
-                                                                </div>
+
                                                             </div>
 
                                                             <!-- Phần 3: Địa chỉ -->
@@ -352,7 +333,8 @@
                                                                                 c.getDefaultAddress().getRecipientName()
                                                                                 !=null &&
                                                                                 !c.getDefaultAddress().getRecipientName().isEmpty())
-                                                                                ? c.getDefaultAddress().getRecipientName()
+                                                                                ?
+                                                                                c.getDefaultAddress().getRecipientName()
                                                                                 : c.getFullName() %>
                                                                                 <span
                                                                                     style="font-weight: 400; color: #64748b; margin-left: 8px;">
@@ -395,11 +377,11 @@
 
                                                                 <!-- 2. Các địa chỉ khác -->
                                                                 <% if (c.getOtherAddresses() !=null &&
-                                                                    !c.getOtherAddresses().isEmpty()) { for (int i=0; i <
-                                                                    c.getOtherAddresses().size(); i++) { Address
+                                                                    !c.getOtherAddresses().isEmpty()) { for (int i=0; i
+                                                                    < c.getOtherAddresses().size(); i++) { Address
                                                                     otherAddr=c.getOtherAddresses().get(i); boolean
                                                                     isLast=(i==c.getOtherAddresses().size() - 1); %>
-                                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 20px;<%= isLast ? "" : " border-bottom: 1px solid #f1f5f9;" %>">
+                                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 20px;<%= isLast ? "" : "border-bottom: 1px solid #f1f5f9;" %>">
                                                                         <div
                                                                             style="display: flex; flex-direction: column; gap: 4px;">
                                                                             <div
@@ -469,7 +451,7 @@
                                     </main>
                                 </div>
                                 <%-- Toast thông báo dùng chung --%>
-                                <jsp:include page="/WEB-INF/views/layout/toast.jsp" />
+                                    <jsp:include page="/WEB-INF/views/layout/toast.jsp" />
                             </body>
 
                             </html>

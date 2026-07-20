@@ -30,12 +30,7 @@ public class Customer {
     // Giới tính (Nam, Nữ, Khác)
     private String gender;
     
-    // Số điểm tích lũy được qua quá trình giao dịch
-    private Integer accumulatedPoints;
-    
-    // Hạng thành viên (Đồng, Bạc, Vàng, Kim cương) dựa trên điểm tích lũy
-    private String membershipLevel;
-    
+
     // Đường dẫn ảnh đại diện của khách hàng (URL ảnh hoặc file uploads)
     private String avatar;
     
@@ -60,7 +55,7 @@ public class Customer {
      * Constructor đầy đủ tham số để tạo nhanh một đối tượng khách hàng.
      */
     public Customer(String id, String fullName, String email, String password, String phoneNumber,
-                    Date dateOfBirth, String gender, Integer accumulatedPoints, String membershipLevel,
+                    Date dateOfBirth, String gender, 
                     String avatar, String status, Address defaultAddress, List<Address> otherAddresses) {
         this.id = id;
         this.fullName = fullName;
@@ -69,8 +64,8 @@ public class Customer {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.accumulatedPoints = accumulatedPoints;
-        this.membershipLevel = membershipLevel;
+        
+        
         this.avatar = avatar;
         this.status = status;
         this.defaultAddress = defaultAddress;
@@ -135,21 +130,7 @@ public class Customer {
         this.gender = gender;
     }
 
-    public Integer getAccumulatedPoints() {
-        return accumulatedPoints;
-    }
 
-    public void setAccumulatedPoints(Integer accumulatedPoints) {
-        this.accumulatedPoints = accumulatedPoints;
-    }
-
-    public String getMembershipLevel() {
-        return membershipLevel;
-    }
-
-    public void setMembershipLevel(String membershipLevel) {
-        this.membershipLevel = membershipLevel;
-    }
 
     public String getAvatar() {
         return avatar;
@@ -199,8 +180,8 @@ public class Customer {
         private String phoneNumber;
         private Date dateOfBirth;
         private String gender;
-        private Integer accumulatedPoints;
-        private String membershipLevel;
+        
+        
         private String avatar;
         private String status;
         private Address defaultAddress;
@@ -241,15 +222,7 @@ public class Customer {
             return this;
         }
 
-        public CustomerBuilder accumulatedPoints(Integer accumulatedPoints) {
-            this.accumulatedPoints = accumulatedPoints;
-            return this;
-        }
 
-        public CustomerBuilder membershipLevel(String membershipLevel) {
-            this.membershipLevel = membershipLevel;
-            return this;
-        }
 
         public CustomerBuilder avatar(String avatar) {
             this.avatar = avatar;
@@ -276,7 +249,7 @@ public class Customer {
          */
         public Customer build() {
             return new Customer(id, fullName, email, password, phoneNumber, dateOfBirth,
-                    gender, accumulatedPoints, membershipLevel, avatar,
+                    gender, avatar,
                     status, defaultAddress, otherAddresses);
         }
     }

@@ -245,9 +245,9 @@
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
                     <h1><%= isEdit ? "Cập nhật hồ sơ khách hàng" : "Thêm khách hàng mới" %></h1>
-                    <div class="subtitle"><%= (isEdit && c != null) ? "Chỉnh sửa các trường thông tin của " + c.getId() : "Điền đầy đủ thông tin để lưu khách hàng" %></div>
+                    <div class="subtitle"><%= (c != null) ? "Chỉnh sửa các trường thông tin của " + c.getId() : "Điền đầy đủ thông tin để lưu khách hàng" %></div>
                 </div>
-                <a href="<%= contextPath %>/admin/customers<%= (isEdit && c != null) ? "?action=details&id=" + c.getId() : "" %>" class="btn-outline" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 8px; padding: 10px 16px; font-weight: 600;">
+                <a href="<%= contextPath %>/admin/customers<%= (c != null) ? "?action=details&id=" + c.getId() : "" %>" class="btn-outline" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 8px; padding: 10px 16px; font-weight: 600;">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     <span>Quay lại</span>
                 </a>
@@ -267,10 +267,10 @@
             </div>
             <% } %>
 
-            <form action="<%= contextPath %>/admin/customers" method="post" id="customerForm" enctype="multipart/form-data">
+            <form action="<%= contextPath %>/admin/customers" method="post" id="customerForm" enctype="multipart/form-data" onsubmit="return syncAllAddressBeforeSubmit()">
                 <input type="hidden" name="action" value="<%= isEdit ? "edit" : "add" %>">
                 <!-- Trường ẩn giữ URL ảnh cũ khi chỉnh sửa và không upload tệp mới -->
-                <input type="hidden" name="anhDaiDien" value="<%= (isEdit && c != null) ? c.getAvatar() : "" %>">
+                <input type="hidden" name="anhDaiDien" value="<%= (c != null) ? c.getAvatar() : "" %>">
 
                 <!-- 1. Thông tin chung & Ảnh đại diện -->
                 <div class="form-card">
@@ -281,7 +281,7 @@
 
                     <!-- Khu vực upload ảnh đại diện -->
                     <div class="avatar-upload-area">
-                        <img src="<%= (isEdit && c != null && c.getAvatar() != null && !c.getAvatar().isEmpty()) ? c.getAvatar() : "https://i.pravatar.cc/150?img=0" %>" id="avatarPreview" class="preview-avatar" alt="avatar preview" onerror="this.src='https://i.pravatar.cc/150?img=0'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; margin-bottom: 0;">
+                        <img src="<%= (c != null && c.getAvatar() != null && !c.getAvatar().isEmpty()) ? c.getAvatar() : "https://i.pravatar.cc/150?img=0" %>" id="avatarPreview" class="preview-avatar" alt="avatar preview" onerror="this.src='https://i.pravatar.cc/150?img=0'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; margin-bottom: 0;">
                         <div>
                             <input type="file" name="anhDaiDienFile" id="customerAvatarFile" accept="image/*" onchange="previewImage(this)" style="display: none;">
                             <button type="button" onclick="document.getElementById('customerAvatarFile').click()" class="btn-cancel" style="padding: 8px 16px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
@@ -300,37 +300,34 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="customerName">Họ và tên<span class="required">*</span></label>
-                            <input type="text" name="hoTen" id="customerName" class="form-input" placeholder="Nhập đầy đủ họ tên" required value="<%= (isEdit && c != null) ? c.getFullName() : "" %>">
+                            <input type="text" name="hoTen" id="customerName" class="form-input" placeholder="Nhập đầy đủ họ tên" required value="<%= (c != null) ? c.getFullName() : "" %>">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="customerEmail">Email liên hệ<span class="required">*</span></label>
-                            <input type="email" name="email" id="customerEmail" class="form-input" placeholder="example@gmail.com" required value="<%= (isEdit && c != null) ? c.getEmail() : "" %>">
+                            <input type="email" name="email" id="customerEmail" class="form-input" placeholder="example@gmail.com" required value="<%= (c != null) ? c.getEmail() : "" %>">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="customerGender">Giới tính</label>
                             <select name="gioiTinh" id="customerGender" class="form-select">
-                                <option value="Nam" <%= (isEdit && c != null && "Nam".equals(c.getGender())) ? "selected" : "" %>>Nam</option>
-                                <option value="Nữ" <%= (isEdit && c != null && "Nữ".equals(c.getGender())) ? "selected" : "" %>>Nữ</option>
-                                <option value="Khác" <%= (isEdit && c != null && "Khác".equals(c.getGender())) ? "selected" : "" %>>Khác</option>
+                                <option value="Nam" <%= (c != null && "Nam".equals(c.getGender())) ? "selected" : "" %>>Nam</option>
+                                <option value="Nữ" <%= (c != null && "Nữ".equals(c.getGender())) ? "selected" : "" %>>Nữ</option>
+                                <option value="Khác" <%= (c != null && "Khác".equals(c.getGender())) ? "selected" : "" %>>Khác</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="customerPassword">Mật khẩu<span class="required">*</span></label>
-                            <input type="password" name="matKhau" id="customerPassword" class="form-input" placeholder="Mật khẩu tài khoản" required value="<%= (isEdit && c != null) ? c.getPassword() : "" %>">
-                        </div>
+
                         <div class="form-group">
                             <label class="form-label" for="customerPhone">Số điện thoại<span class="required">*</span></label>
-                            <input type="tel" name="soDienThoai" id="customerPhone" class="form-input" placeholder="Ví dụ: 0987654321" required value="<%= (isEdit && c != null) ? c.getPhoneNumber() : "" %>">
+                            <input type="tel" name="soDienThoai" id="customerPhone" class="form-input" placeholder="Ví dụ: 0987654321" required value="<%= (c != null) ? c.getPhoneNumber() : "" %>">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="customerDob">Ngày sinh</label>
-                            <input type="date" name="ngaySinh" id="customerDob" class="form-input" value="<%= (isEdit && c != null && c.getDateOfBirth() != null) ? isoDf.format(c.getDateOfBirth()) : "" %>">
+                            <input type="date" name="ngaySinh" id="customerDob" class="form-input" value="<%= (c != null && c.getDateOfBirth() != null) ? isoDf.format(c.getDateOfBirth()) : "" %>">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="customerStatus">Trạng thái</label>
                             <select name="trangThai" id="customerStatus" class="form-select">
-                                <option value="Hoạt động" <%= (isEdit && c != null && "Hoạt động".equals(c.getStatus())) ? "selected" : "" %>>Hoạt động</option>
-                                <option value="Khóa" <%= (isEdit && c != null && "Khóa".equals(c.getStatus())) ? "selected" : "" %>>Khóa</option>
+                                <option value="Hoạt động" <%= (c != null && "Hoạt động".equals(c.getStatus())) ? "selected" : "" %>>Hoạt động</option>
+                                <option value="Khóa" <%= (c != null && "Khóa".equals(c.getStatus())) ? "selected" : "" %>>Khóa</option>
                             </select>
                         </div>
                     </div>
@@ -345,15 +342,15 @@
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Tên người nhận<span class="required">*</span></label>
-                            <input type="text" name="diaChiMacDinhTen" id="defaultAddressTen" class="form-input" placeholder="Tên người nhận" required value="<%= (isEdit && c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getRecipientName() : "" %>">
+                            <input type="text" name="diaChiMacDinhTen" id="defaultAddressTen" class="form-input" placeholder="Tên người nhận" required value="<%= (c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getRecipientName() : "" %>">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Số điện thoại<span class="required">*</span></label>
-                            <input type="text" name="diaChiMacDinhSdt" id="defaultAddressSdt" class="form-input" placeholder="Số điện thoại" required value="<%= (isEdit && c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getRecipientPhone() : "" %>">
+                            <input type="text" name="diaChiMacDinhSdt" id="defaultAddressSdt" class="form-input" placeholder="Số điện thoại" required value="<%= (c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getRecipientPhone() : "" %>">
                         </div>
                     </div>
 
-                    <input type="hidden" name="diaChiMacDinh" id="customerDefaultAddress" value="<%= (isEdit && c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getAddressDetail() : "" %>">
+                    <input type="hidden" id="customerDefaultAddressSync" value="<%= (c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getAddressDetail() : "" %>">  
 
                     <div class="form-grid" style="margin-top: 16px;">
                         <div class="form-group">
@@ -379,6 +376,7 @@
                             <input type="text" id="defaultAddressDetailInput" class="form-input" placeholder="Số nhà, tên đường, ngõ ngách..." required>
                         </div>
                     </div>
+                    <input type="hidden" name="diaChiMacDinh" id="customerDefaultAddress" value="<%= (c != null && c.getDefaultAddress() != null) ? c.getDefaultAddress().getAddressDetail() : "" %>">
                 </div>
 
                 <!-- 3. Các địa chỉ khác -->
@@ -397,7 +395,7 @@
 
                     <div id="otherAddressesContainer">
                         <%
-                            if (isEdit && c != null && c.getOtherAddresses() != null) {
+                            if (c != null && c.getOtherAddresses() != null) {
                                 for (int i = 0; i < c.getOtherAddresses().size(); i++) {
                                     Address addr = c.getOtherAddresses().get(i);
                         %>
@@ -484,18 +482,22 @@
         }
     }
 
-    // Hàm phân tích chuỗi địa chỉ đầy đủ thành các phần: tỉnh, huyện, xã, số nhà
+    // Phân tích chuỗi địa chỉ đầy đủ thành các phần: tỉnh, huyện, xã, số nhà
+    // Trả về null nếu địa chỉ rỗng hoặc chỉ có dấu phẩy/khoảng trắng (địa chỉ bị hỏng)
     function parseAddressString(detailStr) {
-        if (!detailStr) return { province: '', district: '', ward: '', street: '' };
+        if (!detailStr) return null;
+        // Kiểm tra địa chỉ có nội dung thực sự không (không chỉ là dấu phẩy/khoảng trắng)
+        const meaningful = detailStr.replace(/[,\s]/g, '');
+        if (!meaningful) return null; // Dữ liệu rác: ", ," hay tương tự
         const parts = detailStr.split(',').map(s => s.trim());
         if (parts.length >= 4) {
             const province = parts[parts.length - 1];
             const district = parts[parts.length - 2];
-            const ward = parts[parts.length - 3];
-            const street = parts.slice(0, parts.length - 3).join(', ');
+            const ward     = parts[parts.length - 3];
+            const street   = parts.slice(0, parts.length - 3).join(', ');
             return { province, district, ward, street };
         }
-        return { province: '', district: '', ward: '', street: detailStr };
+        return { province: '', district: '', ward: '', street: detailStr.trim() };
     }
 
 
@@ -584,7 +586,8 @@
     }
 
     // Khởi tạo các dropdown địa chỉ cho một khối
-    async function initAddressDropdowns(hiddenInput, provinceSel, districtSel, wardSel, streetInput) {
+    // overrideValue: nếu có, dùng giá trị này để khôi phục dropdown (thay vì đọc từ hiddenInput.value)
+    async function initAddressDropdowns(hiddenInput, provinceSel, districtSel, wardSel, streetInput, overrideValue) {
 
         // Tải song song tỉnh và quận/huyện
         const [provinces, allDistricts] = await Promise.all([getProvinces(), getAllDistricts()]);
@@ -599,22 +602,20 @@
         });
 
         function updateHiddenValue() {
-            // Dùng .value (không phải .text) để kiểm tra xem có lựa chọn thật không.
-            // Option mặc định có value="" nên luôn là falsy → không bị nhầm với "-- Chọn... --"
             const pVal  = provinceSel.value;
             const dVal  = districtSel.value;
             const wVal  = wardSel.value;
-            const pText = provinceSel.options[provinceSel.selectedIndex]?.text || '';
-            const dText = districtSel.options[districtSel.selectedIndex]?.text || '';
-            const wText = wardSel.options[wardSel.selectedIndex]?.text || '';
+            const pText = pVal ? (provinceSel.options[provinceSel.selectedIndex]?.text || '') : '';
+            const dText = dVal ? (districtSel.options[districtSel.selectedIndex]?.text || '') : '';
+            const wText = wVal ? (wardSel.options[wardSel.selectedIndex]?.text || '') : '';
             const s     = streetInput.value.trim();
-            if (pVal && dVal && wVal && s) {
-                // Đủ 4 thành phần → ghép địa chỉ đầy đủ
-                hiddenInput.value = `${s}, ${wText}, ${dText}, ${pText}`;
-            } else {
-                // Thiếu tỉnh/quận/xã → chỉ lưu số nhà (không lưu placeholder)
-                hiddenInput.value = s;
-            }
+            
+            let parts = [];
+            if (s) parts.push(s);
+            if (wText) parts.push(wText);
+            if (dText) parts.push(dText);
+            if (pText) parts.push(pText);
+            hiddenInput.value = parts.join(', ');
         }
 
         function fillDistricts(pCode) {
@@ -697,10 +698,18 @@
         streetInput.addEventListener('input', updateHiddenValue);
 
         // Khôi phục giá trị cũ (chế độ Edit)
-        const existing = hiddenInput.value;
-        if (existing) {
-            const parsed = parseAddressString(existing);
-            streetInput.value = parsed.street;
+        // Nếu có overrideValue (từ hidden sync), dùng nó để khôi phục dropdown
+        // Giá trị của hiddenInput (visible field) không bị xóa - người dùng có thể tự nhập vào đó
+        const restoreSource = (overrideValue !== undefined) ? overrideValue : hiddenInput.value;
+        if (restoreSource) {
+            const parsed = parseAddressString(restoreSource);
+            if (!parsed) {
+                // Dữ liệu hỏng: chỉ log, KHÔNG xóa hiddenInput (nười dùng có thể sửa trực tiếp)
+                console.warn('[Address] Phát hiện địa chỉ hỏng, bỏ qua khôi phục dropdown:', restoreSource);
+                return;
+            }
+            // Chỉ điền số nhà nếu streetInput chưa có giá trị
+            if (!streetInput.value) streetInput.value = parsed.street;
 
             const pMatch = provinces.find(p =>
                 p.name.toLowerCase() === parsed.province.toLowerCase());
@@ -725,8 +734,12 @@
                         });
                         const wMatch = wards.find(w =>
                             w.name.toLowerCase() === parsed.ward.toLowerCase());
-                        if (wMatch) wardSel.value = wMatch.code;
-                        wardSel.disabled = false;
+                        if (wMatch) {
+                            wardSel.value = wMatch.code;
+                            wardSel.disabled = false;
+                        } else {
+                            wardSel.disabled = false;
+                        }
                     }
                 }
             }
@@ -737,14 +750,18 @@
     // Khởi chạy khi DOM load
     document.addEventListener('DOMContentLoaded', () => {
         // Init địa chỉ mặc định
-        const defaultHidden = document.getElementById('customerDefaultAddress');
-        const defaultProv = document.getElementById('defaultProvince');
-        const defaultDist = document.getElementById('defaultDistrict');
-        const defaultWard = document.getElementById('defaultWard');
-        const defaultStreet = document.getElementById('defaultAddressDetailInput');
+        // customerDefaultAddressSync = hidden chứa giá trị gốc (chỉ để khôi phục dropdown)
+        // customerDefaultAddress    = visible text field, là field submit chính
+        const syncHidden   = document.getElementById('customerDefaultAddressSync');
+        const visibleField = document.getElementById('customerDefaultAddress');
+        const defaultProv  = document.getElementById('defaultProvince');
+        const defaultDist  = document.getElementById('defaultDistrict');
+        const defaultWard  = document.getElementById('defaultWard');
+        const defaultStreet= document.getElementById('defaultAddressDetailInput');
 
-        if (defaultHidden && defaultProv && defaultDist && defaultWard && defaultStreet) {
-            initAddressDropdowns(defaultHidden, defaultProv, defaultDist, defaultWard, defaultStreet);
+        if (syncHidden && visibleField && defaultProv && defaultDist && defaultWard && defaultStreet) {
+            // Dùng syncHidden để restore dropdown, nhưng khi updateHiddenValue chạy sẽ cập nhật visibleField
+            initAddressDropdowns(visibleField, defaultProv, defaultDist, defaultWard, defaultStreet, syncHidden.value);
         }
 
         // Init các địa chỉ phụ cũ (nếu có trong chế độ Edit)
@@ -879,6 +896,57 @@
 
     function removeAddressField(button) {
         button.closest('.address-card-row').remove();
+    }
+
+    // Sync tất cả hidden inputs của địa chỉ ngay trước khi submit form
+    // Trả về false nếu địa chỉ mặc định chưa hợp lệ → ngăn submit
+    function syncAllAddressBeforeSubmit() {
+        const defaultHidden = document.getElementById('customerDefaultAddress');
+        const defaultProv   = document.getElementById('defaultProvince');
+        const defaultDist   = document.getElementById('defaultDistrict');
+        const defaultWard   = document.getElementById('defaultWard');
+        const defaultStreet = document.getElementById('defaultAddressDetailInput');
+        _syncOneBlock(defaultHidden, defaultProv, defaultDist, defaultWard, defaultStreet);
+
+        document.querySelectorAll('.address-card-row').forEach(card => {
+            const h = card.querySelector('.other-address-hidden');
+            const p = card.querySelector('.other-province');
+            const d = card.querySelector('.other-district');
+            const w = card.querySelector('.other-ward');
+            const s = card.querySelector('.other-detail-input');
+            _syncOneBlock(h, p, d, w, s);
+        });
+
+        // Kiểm tra địa chỉ mặc định có hợp lệ không
+        // Kiểm tra địa chỉ mặc định có hợp lệ không
+        const finalAddr = defaultHidden ? defaultHidden.value.trim() : '';
+        const isValid = finalAddr && finalAddr.replace(/[,\s]/g, '').length > 0;
+        if (!isValid) {
+            const streetVal = defaultStreet ? defaultStreet.value.trim() : '';
+            if (!streetVal) {
+                alert('Vui lòng nhập số nhà/tên đường và chọn Tỉnh/Thành, Quận/Huyện, Phường/Xã!');
+                return false;
+            }
+            if (defaultHidden) defaultHidden.value = streetVal;
+        }
+        return true;
+    }
+
+    // Hàm nội bộ: cập nhật hidden với các trường đã chọn
+    function _syncOneBlock(hidden, prov, dist, ward, street) {
+        if (!hidden || !prov || !dist || !ward || !street) return;
+        const pVal = prov.value, dVal = dist.value, wVal = ward.value;
+        const s = street.value.trim();
+        const pText = pVal ? (prov.options[prov.selectedIndex]?.text || '') : '';
+        const dText = dVal ? (dist.options[dist.selectedIndex]?.text || '') : '';
+        const wText = wVal ? (ward.options[ward.selectedIndex]?.text || '') : '';
+        
+        let parts = [];
+        if (s) parts.push(s);
+        if (wText) parts.push(wText);
+        if (dText) parts.push(dText);
+        if (pText) parts.push(pText);
+        hidden.value = parts.join(', ');
     }
 </script>
 

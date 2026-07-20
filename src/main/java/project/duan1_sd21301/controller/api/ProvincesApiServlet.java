@@ -64,9 +64,10 @@ public class ProvincesApiServlet extends HttpServlet {
         System.out.println("[ProvincesApiProxy] Target URL: " + targetUrl);
 
         // Kiểm tra xem phản hồi đã có trong cache chưa
-        if (cache.containsKey(targetUrl)) {
+        String cacheKey = targetUrl;
+        if (cache.containsKey(cacheKey)) {
             System.out.println("[ProvincesApiProxy] Serve from Cache: " + targetUrl);
-            response.getWriter().write(cache.get(targetUrl));
+            response.getWriter().write(cache.get(cacheKey));
             return;
         }
 
@@ -75,7 +76,7 @@ public class ProvincesApiServlet extends HttpServlet {
             HttpRequest apiRequest = HttpRequest.newBuilder()
                     .uri(URI.create(targetUrl))
                     .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(Duration.ofSeconds(60))
                     .GET()
                     .build();
 
@@ -85,7 +86,7 @@ public class ProvincesApiServlet extends HttpServlet {
             if (apiResponse.statusCode() == 200) {
                 String jsonBody = apiResponse.body();
                 // Lưu vào cache
-                cache.put(targetUrl, jsonBody);
+                cache.put(cacheKey, jsonBody);
                 // Trả về kết quả
                 response.getWriter().write(jsonBody);
             } else {
@@ -104,5 +105,15 @@ public class ProvincesApiServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\": \"Error fetching data: " + e.getMessage() + "\"}");
         }
+    }
+
+    // Endpoint POST để xóa toàn bộ cache (dùng khi debug)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        cache.clear();
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"message\": \"Cache cleared\", \"size\": 0}");
+        System.out.println("[ProvincesApiProxy] Cache cleared by POST request.");
     }
 }

@@ -414,7 +414,7 @@
                                             <table class="invoice-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>STT</th>
+                                                        <th style="text-align: center; width: 60px;">STT</th>
                                                         <th>MÃ KHÁCH HÀNG</th>
                                                         <th>TÊN KHÁCH HÀNG</th>
                                                         <th>SỐ ĐIỆN THOẠI</th>
@@ -422,8 +422,8 @@
                                                         <th>NGÀY SINH</th>
                                                         <th>GIỚI TÍNH</th>
                                                         <th>ĐỊA CHỈ MẶC ĐỊNH</th>
-                                                        <th>TRẠNG THÁI</th>
-                                                        <th style="text-align: center;">HÀNH ĐỘNG</th>
+                                                        <th style="text-align: center; width: 120px;">TRẠNG THÁI</th>
+                                                        <th style="text-align: center; width: 140px;">HÀNH ĐỘNG</th>
                                                     </tr>
                                                 </thead>
                                                 <%-- Duyệt qua danh sách khách hàng được truyền từ Servlet Controller --%>
@@ -437,7 +437,7 @@
                                                         <%-- Khi click vào dòng thì chuyển hướng sang trang xem chi tiết khách hàng --%>
                                                         <tr>
                                                                 <td
-                                                                    style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #475569;">
+                                                                    style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #475569; text-align: center;">
                                                                     <%= stt++ %>
                                                                 </td>
                                                                 <td
@@ -469,7 +469,7 @@
                                                                 <td style="color: #475569; font-weight: 500;">
                                                                     <%= c.getGender() %>
                                                                 </td>
-                                                                <td style="color: #475569; font-size: 13px; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                                <td style="color: #475569; font-size: 13px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                                                                     title="<%= (c.getDefaultAddress() != null) ? c.getDefaultAddress().getAddressDetail() : "" %>">
                                                                     <%= (c.getDefaultAddress() != null) ?
                                                                         c.getDefaultAddress().getAddressDetail() : "N/A"
